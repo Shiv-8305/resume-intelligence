@@ -6,6 +6,13 @@ from typing import Dict, List, Any
 
 # Environment & Model Settings
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+if not OPENAI_API_KEY:
+    try:
+        import streamlit as st
+        OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
+    except Exception:
+        OPENAI_API_KEY = ""
+
 DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small"
 DEFAULT_LLM_MODEL = "gpt-4o-mini"
 
