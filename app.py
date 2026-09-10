@@ -149,7 +149,16 @@ st.markdown("""
 with st.sidebar:
     st.markdown("### ⚙️ System Controls")
 
-    if OPENAI_API_KEY:
+    # Dynamic API Key state
+    user_api_key = st.text_input("OpenAI API Key (Optional)", value=st.session_state.get("openai_api_key", ""), type="password", help="Paste your OpenAI API key to enable LLM parsing & OpenAI embeddings on live web app.")
+    if user_api_key:
+        st.session_state["openai_api_key"] = user_api_key
+        os.environ["OPENAI_API_KEY"] = user_api_key
+        import config
+        config.OPENAI_API_KEY = user_api_key
+
+    active_key = os.getenv("OPENAI_API_KEY", "") or st.session_state.get("openai_api_key", "")
+    if active_key:
         st.success("🟢 OpenAI API: Active (Semantic Embeddings & LLM Enabled)")
     else:
         st.info("🟡 Fallback Mode: Deterministic Regex + TF-IDF Vectorizer Active")
